@@ -33,34 +33,16 @@ const cleanForecast = function(daily){
 async function getWeatherData(response, lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=3`;
 
-    try {
-      const weather_response = await axios.get(url)
-     
-      if(weather_response.data.daily){
-        console.log('got weather', weather_response.data.daily)
-         response.send(cleanForecast(weather_response.data.daily))
-      } else {
-        response.status(404).send('Could not locate weather data')
-      }
-    } catch (error) {
-      console.log(error)
+  try {
+    const weather_response = await axios.get(url)
+    if(weather_response.data.daily){
+       response.send(cleanForecast(weather_response.data.daily))
+    } else {
       response.status(404).send('Could not locate weather data')
     }
-   // await axios.get(url)
-   //    .then(response=>{
-
-   //      console.log('success', response.data.daily.time)
-   //      if (response.data.daily) {
-   //        console.log('format data')
-   //        return cleanForecast(response.data.daily)
-   //      } 
-   //    })  
-   //    .catch(e => {
-   //      if(e.response){
-   //        console.log(e.response)
-   //        return ''
-   //      }
-   //    })  
+  } catch (error) {
+    response.status(404).send('Could not locate weather data')
+  }
 }
 
 app.use(cors()); // this settting says that everyone is allowed to speak to our server
@@ -80,13 +62,6 @@ app.get('/weather', (request, response)=>{
   } else {
     response.status(400).send('Bad request')
   }
-  // if(weatherData) {
-  // console.log('weatherData', weatherData[0])
-  //   response.send(weatherData)
-  // } else {
-  //   response.status(404).send('Could not locate weather data')
-  // }
-  
 
 })
 
